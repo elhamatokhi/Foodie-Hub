@@ -1,6 +1,7 @@
 import { count } from "console";
 import pool from "../models/db.js";
 
+/* --------------------------- RESTAURANTS ------------------------------- */
 // Get all restaurants
 export const getAllRestaurants = async (req, res) => {
   try {
@@ -73,3 +74,57 @@ export const updateRestaurant = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+// Delete a restaurant
+export const deleteRestaurant = async (req, res) => {
+  const { id } = req.params;
+
+  const query = `
+  DELETE  FROM restaurants
+  WHERE id = $1
+  `;
+  const result = await pool.query(query, [id]);
+
+  if (result.rowCount === 0) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Restaurant not found." });
+  }
+
+  res
+    .status(200)
+    .json({ success: true, message: "Restaurant deleted successfully." });
+};
+
+/* --------------------------- END OF RESTAURANTS ------------------------------- */
+
+/* --------------------------- MENU_ITEMS  START------------------------------- */
+// ADD Menu Item
+export const addMenuItem = async (req, res) => {
+  const restaurant_id = req.params.id;
+  try {
+    const { name, description, price, category, dietary_info, available } =
+      req.body;
+    const query = `
+    INSERT INTO menu_items (name, description, price, category, dietary_info, available, restaurant_id)  
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING *;
+  `;
+    const values = [
+      name,
+      description,
+      price,
+      category,
+      dietary_info,
+      available,
+      restaurant_id,
+    ];
+    const result = await pool.query(query, values);
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.log(`Error adding  menu to restaurant ${restaurant_id} `, error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+/* --------------------------- MENU_ITEMS END ------------------------------- */

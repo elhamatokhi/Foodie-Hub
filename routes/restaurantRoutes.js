@@ -4,6 +4,8 @@ import {
   getAllRestaurants,
   addRestaurant,
   updateRestaurant,
+  deleteRestaurant,
+  addMenuItem,
 } from "../controllers/restaurantController.js";
 const router = Router();
 
@@ -15,12 +17,21 @@ router.get("/restaurants", getAllRestaurants);
 // Add a new restaurant
 router.post("/restaurants", addRestaurant);
 
-// // GET a new restaurant
-// router.get("/restaurants/new", (req, res) => {
-//   res.render("restaurants");
-// });  Frontend should take care of it
+// GET a new restaurant
+// Frontend should take care of it
 
 // Update a restaurant
 router.put("/restaurants/:id", updateRestaurant);
 
+// Delete a restaurant
+router.delete("/delete/:id", deleteRestaurant);
 export default router;
+
+/* --------------------------- END OF RESTAURANTS ------------------------------- */
+
+/* --------------------------- MENU_ITEMS  START------------------------------- */
+
+// ADD menu_item to a retaurant
+router.post("/restaurants/:id/menu", addMenuItem);
+
+/* --------------------------- MENU_ITEMS END ------------------------------- */
