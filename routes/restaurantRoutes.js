@@ -6,6 +6,7 @@ import {
   updateRestaurant,
   deleteRestaurant,
   addMenuItem,
+  getMenuItem,
 } from "../controllers/restaurantController.js";
 const router = Router();
 
@@ -34,4 +35,6 @@ export default router;
 // ADD menu_item to a retaurant
 router.post("/restaurants/:id/menu", addMenuItem);
 
+// GET menu_item in a restaurant
+router.get("/restaurants/:id/menu", getMenuItem);
 /* --------------------------- MENU_ITEMS END ------------------------------- */

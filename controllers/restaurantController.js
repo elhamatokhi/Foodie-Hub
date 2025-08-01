@@ -99,6 +99,7 @@ export const deleteRestaurant = async (req, res) => {
 /* --------------------------- END OF RESTAURANTS ------------------------------- */
 
 /* --------------------------- MENU_ITEMS  START------------------------------- */
+
 // ADD Menu Item
 export const addMenuItem = async (req, res) => {
   const restaurant_id = req.params.id;
@@ -123,6 +124,29 @@ export const addMenuItem = async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.log(`Error adding  menu to restaurant ${restaurant_id} `, error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// GET menu in a restaurant
+export const getMenuItem = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const query = `
+     SELECT * FROM menu_items WHERE restaurant_id = $1
+  `;
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No menu items found for this restaurant.",
+      });
+    }
+
+    res.status(200).json({ success: true, menuItems: result.rows });
+  } catch (err) {
+    console.error("Error fetching menu items by restaurant:", err);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
