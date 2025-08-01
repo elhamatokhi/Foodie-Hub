@@ -300,3 +300,19 @@ export const deleteCustomer = async (req, res) => {
 };
 
 /* --------------------------- CUSTOMERS END ------------------------------- */
+
+/* --------------------------- ORDERS START ------------------------------- */
+
+// GET all existig orders
+export const getAllOrders = async (req, res) => {};
+
+// ADD a new order
+export const addOrder = async (req, res) => {};
+
+// GET all orders for a customer
+export const getOrdersByCustomer = async (req, res) => {};
+
+// DELETE an order
+export const updateOrder = async (req, res) => {};
+
+/* --------------------------- ORDERS END ------------------------------- */

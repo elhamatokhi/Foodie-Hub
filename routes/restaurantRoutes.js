@@ -14,6 +14,10 @@ import {
   getAllCustomers,
   updateCustomer,
   deleteCustomer,
+  getAllOrders,
+  addOrder,
+  getOrdersByCustomer,
+  updateOrder,
 } from "../controllers/restaurantController.js";
 const router = Router();
 
@@ -70,3 +74,22 @@ router.put("/customers/:id", updateCustomer);
 router.delete("/deleteCustomer/:id", deleteCustomer);
 
 /* --------------------------- CUSTOMERS END ------------------------------- */
+
+/* --------------------------- ORDERS START ------------------------------- */
+
+// GET /orders
+router.get("/orders", getAllOrders);
+
+// POST /orders
+router.post("/orders", addOrder);
+
+// GET all orders for a customer
+router.get("/customers/:id/orders", getOrdersByCustomer);
+
+// PUT / Update an order
+router.put("/orders/:id", updateOrder);
+
+// DELETE an order
+router.delete("/orders/:id", deleteOrder);
+
+/* --------------------------- ORDERS END ------------------------------- */
