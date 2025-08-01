@@ -1,7 +1,7 @@
 # Foodie-Hub
 
 A full-stack web application for managing restaurants, menus, and customer orders.  
-Built with Node.js, Express, and PostgreSQL, Foodie-Hub offers a clean API to handle restaurant data, customer orders, and menu management with features like pagination, filtering, and status tracking.
+Built with Node.js, Express, and PostgreSQL, Foodie-Hub offers a clean API to handle restaurant data, customer orders, and menu management with features like pagination, filtering, and status tracking. This is only for practice and has no real world use.
 
 ## Features
 
@@ -16,7 +16,6 @@ Built with Node.js, Express, and PostgreSQL, Foodie-Hub offers a clean API to ha
 
 - **Backend**: Node.js, Express.js
 - **Database**: PostgreSQL
-- **Frontend**: EJS templates
 - **Database Driver**: pg (node-postgres)
 
 ---
