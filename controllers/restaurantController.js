@@ -180,4 +180,35 @@ export const updateMenuItem = async (req, res) => {
   }
   res.status(200).json({ success: true, menu: result.rows[0] });
 };
+
+// DELETE a menu of a restaurant
+export const deleteMenuItem = async (req, res) => {
+  const id = req.params.id;
+  const query = `
+  DELETE FROM menu_items
+  WHERE id = $1
+  RETURNING *
+  `;
+  const result = await pool.query(query, [id]);
+  console.log("Delete succssessfully!");
+  if (result.rowCount === 0) {
+    return res.status(404).json({ success: false, message: "Menu not found." });
+  }
+
+  res
+    .status(200)
+    .json({ success: true, message: "Menu deleted successfully." });
+};
+
+// GET all existing Menus
+export const getAllMenuItems = async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT * FROM menu_items`);
+    res.json(result.rows);
+  } catch (error) {
+    console.log("Error fetching menu_items");
+    res.status(500).send("Internal server error");
+  }
+};
+
 /* --------------------------- MENU_ITEMS END ------------------------------- */

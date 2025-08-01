@@ -8,6 +8,8 @@ import {
   addMenuItem,
   getMenuItem,
   updateMenuItem,
+  deleteMenuItem,
+  getAllMenuItems,
 } from "../controllers/restaurantController.js";
 const router = Router();
 
@@ -41,4 +43,10 @@ router.get("/restaurants/:id/menu", getMenuItem);
 
 // Update menu_item
 router.put("/menu/:id", updateMenuItem);
+
+// DELETE menu_item in a restaurant
+router.delete("/deleteMenu/:id", deleteMenuItem);
+
+// GET all menu_items
+router.get("/menuItems", getAllMenuItems);
 /* --------------------------- MENU_ITEMS END ------------------------------- */
