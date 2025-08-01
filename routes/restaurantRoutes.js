@@ -18,6 +18,7 @@ import {
   addOrder,
   getOrdersByCustomer,
   updateOrder,
+  deleteOrder,
 } from "../controllers/restaurantController.js";
 const router = Router();
 
@@ -84,9 +85,9 @@ router.get("/orders", getAllOrders);
 router.post("/orders", addOrder);
 
 // GET all orders for a customer
-router.get("/customers/:id/orders", getOrdersByCustomer);
+router.get("/orders/customer/:id", getOrdersByCustomer);
 
-// PUT / Update an order
+// PUT Update an order
 router.put("/orders/:id", updateOrder);
 
 // DELETE an order

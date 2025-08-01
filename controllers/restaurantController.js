@@ -304,15 +304,112 @@ export const deleteCustomer = async (req, res) => {
 /* --------------------------- ORDERS START ------------------------------- */
 
 // GET all existig orders
-export const getAllOrders = async (req, res) => {};
+export const getAllOrders = async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT * FROM orders`);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "No order yet!" });
+    }
+    res.json(result.rows);
+  } catch (error) {
+    console.log("Failed to fetch orders.");
+    res.status(500).send("Internal server error.");
+  }
+};
 
 // ADD a new order
-export const addOrder = async (req, res) => {};
+export const addOrder = async (req, res) => {
+  try {
+    const { order_date, total_amount, status, customer_id, restaurant_id } =
+      req.body;
+
+    const query = `
+    INSERT INTO orders (order_date, total_amount, status, customer_id, restaurant_id)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `;
+    const values = [
+      order_date,
+      total_amount,
+      status,
+      customer_id,
+      restaurant_id,
+    ];
+    const result = await pool.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Could not add order", error);
+    res.status(500).send("Internal server error.");
+  }
+};
 
 // GET all orders for a customer
-export const getOrdersByCustomer = async (req, res) => {};
+export const getOrdersByCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = `
+    SELECT * FROM orders
+    WHERE customer_id = $1
+    ORDER BY order_date DESC
+    `;
 
-// DELETE an order
-export const updateOrder = async (req, res) => {};
+    const result = await pool.query(query, [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Could not fetch  order for the customer", error);
+    res.status(500).send("Internal server error.");
+  }
+};
 
+// UPDATE an order
+export const updateOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { order_date, total_amount, status, customer_id, restaurant_id } =
+      req.body;
+
+    const values = [
+      order_date,
+      total_amount,
+      status,
+      customer_id,
+      restaurant_id,
+      id,
+    ];
+
+    const query = `
+    UPDATE orders
+    SET order_date = $1, total_amount =$2, status =$3, customer_id = $4, restaurant_id = $5
+    WHERE id = $6
+    RETURNING *`;
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Order not found. Nothing was updated." });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Failed to update the order:", error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+export const deleteOrder = async (req, res) => {
+  const { id } = req.params;
+  const query = `
+  DELETE FROM orders
+  WHERE id = $1
+  RETURNING *
+  `;
+  const result = await pool.query(query, [id]);
+  res.json(result.rows[0]);
+};
 /* --------------------------- ORDERS END ------------------------------- */
