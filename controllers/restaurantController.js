@@ -151,4 +151,33 @@ export const getMenuItem = async (req, res) => {
   }
 };
 
+// Update a menu in a restaurant
+export const updateMenuItem = async (req, res) => {
+  const id = req.params.id;
+  const { name, description, price, category, dietary_info, available } =
+    req.body;
+
+  const query = `
+    UPDATE menu_items
+    SET name = $1, description =$2 , price = $3, category = $4, dietary_info = $5, available = $6
+    WHERE id= $7
+    RETURNING *
+  `;
+
+  const values = [
+    name,
+    description,
+    price,
+    category,
+    dietary_info,
+    available,
+    id,
+  ];
+
+  const result = await pool.query(query, values);
+  if (result.rowCount === 0) {
+    return res.status(404).json({ success: false, message: "Menu not found." });
+  }
+  res.status(200).json({ success: true, menu: result.rows[0] });
+};
 /* --------------------------- MENU_ITEMS END ------------------------------- */
