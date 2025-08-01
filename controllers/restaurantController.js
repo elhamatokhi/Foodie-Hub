@@ -303,17 +303,38 @@ export const deleteCustomer = async (req, res) => {
 
 /* --------------------------- ORDERS START ------------------------------- */
 
-// GET all existig orders
+// GET all existig orders , Pagination applied, filtered by status
 export const getAllOrders = async (req, res) => {
   try {
-    const result = await pool.query(`SELECT * FROM orders`);
+    const { limit = 10, offset = 0, status } = req.query;
+
+    const limitNum = parseInt(limit, 10);
+    const offsetNum = parseInt(offset, 10);
+
+    let query = `SELECT * FROM orders`;
+    const values = [];
+
+    if (status) {
+      values.push(status);
+      query += ` WHERE status = $${values.length}`;
+    }
+
+    values.push(limitNum);
+    values.push(offsetNum);
+
+    query += ` ORDER BY order_date DESC LIMIT $${values.length - 1} OFFSET $${
+      values.length
+    }`;
+
+    const result = await pool.query(query, values);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "No order yet!" });
     }
+
     res.json(result.rows);
   } catch (error) {
-    console.log("Failed to fetch orders.");
+    console.log("Failed to fetch orders.", error);
     res.status(500).send("Internal server error.");
   }
 };
