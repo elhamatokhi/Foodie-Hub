@@ -183,21 +183,28 @@ export const updateMenuItem = async (req, res) => {
 
 // DELETE a menu of a restaurant
 export const deleteMenuItem = async (req, res) => {
-  const id = req.params.id;
-  const query = `
+  try {
+    const id = req.params.id;
+    const query = `
   DELETE FROM menu_items
   WHERE id = $1
   RETURNING *
   `;
-  const result = await pool.query(query, [id]);
-  console.log("Delete succssessfully!");
-  if (result.rowCount === 0) {
-    return res.status(404).json({ success: false, message: "Menu not found." });
-  }
+    const result = await pool.query(query, [id]);
 
-  res
-    .status(200)
-    .json({ success: true, message: "Menu deleted successfully." });
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Menu not found." });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Menu deleted successfully." });
+  } catch (error) {
+    console.log("Error deleting menu_item");
+    res.status(500).send("Internal server error");
+  }
 };
 
 // GET all existing Menus
@@ -212,3 +219,84 @@ export const getAllMenuItems = async (req, res) => {
 };
 
 /* --------------------------- MENU_ITEMS END ------------------------------- */
+
+/* --------------------------- CUSTOMERS START ------------------------------- */
+
+// View all customers
+export const getAllCustomers = async (req, res) => {
+  try {
+    const result = await pool.query(`
+  SELECT * FROM customers  
+  `);
+    res.json(result.rows);
+  } catch (error) {
+    console.log("Error fetching customers");
+    res.status(500).send("Internal server error");
+  }
+};
+
+// Add a new customer
+export const addCustomer = async (req, res) => {
+  try {
+    const { name, email, phone, street, city, country } = req.body;
+    const query = `
+  INSERT INTO customers (name,email,phone,street,city,country) 
+  VALUES ($1, $2,$3, $4, $5, $6)
+  RETURNING *
+  `;
+    const values = [name, email, phone, street, city, country];
+    const result = await pool.query(query, values);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.log("Error adding customers");
+    res.status(500).send("Internal server error");
+  }
+};
+
+// Update a customer
+export const updateCustomer = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name, email, phone, street, city, country } = req.body;
+    const query = `
+  UPDATE customers
+  SET name = $1, email = $2, phone = $3, street = $4, city = $5, country = $6
+  WHERE id = $7
+  RETURNING *
+`;
+    const values = [name, email, phone, street, city, country, id];
+    const result = await pool.query(query, values);
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.log("Error updating customers");
+    res.status(500).send("Internal server error");
+  }
+};
+
+// Delete a customer
+export const deleteCustomer = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = `
+  DELETE FROM customers
+  WHERE id = $1
+  RETURNING *
+  `;
+    const result = await pool.query(query, [id]);
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Customer not found." });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Customer deleted successfully." });
+  } catch (error) {
+    console.log("Error deleting customer");
+    res.status(500).send("Internal server error");
+  }
+};
+
+/* --------------------------- CUSTOMERS END ------------------------------- */

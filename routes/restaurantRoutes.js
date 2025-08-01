@@ -10,6 +10,10 @@ import {
   updateMenuItem,
   deleteMenuItem,
   getAllMenuItems,
+  addCustomer,
+  getAllCustomers,
+  updateCustomer,
+  deleteCustomer,
 } from "../controllers/restaurantController.js";
 const router = Router();
 
@@ -49,4 +53,20 @@ router.delete("/deleteMenu/:id", deleteMenuItem);
 
 // GET all menu_items
 router.get("/menuItems", getAllMenuItems);
+
 /* --------------------------- MENU_ITEMS END ------------------------------- */
+
+/* --------------------------- CUSTOMERS START ------------------------------- */
+
+// GET customers
+router.get("/customers", getAllCustomers);
+
+// POST customers
+router.post("/customers", addCustomer);
+
+// Update customers
+router.put("/customers/:id", updateCustomer);
+// DELETE a customer
+router.delete("/deleteCustomer/:id", deleteCustomer);
+
+/* --------------------------- CUSTOMERS END ------------------------------- */
